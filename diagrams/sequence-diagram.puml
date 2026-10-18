@@ -1,0 +1,49 @@
+
+@startuml
+title Cinema Ticket Booking - Sequence Diagram
+
+actor Customer
+participant "Main" as Main
+participant "CinemaBookingFacade" as Facade
+participant "MovieService" as MovieService
+participant "SeatService" as SeatService
+participant "PaymentService" as PaymentService
+participant "TicketService" as TicketService
+
+Customer -> Main: Start booking
+Main -> Facade: bookTicket(movieTitle, seatNumber, balance)
+
+Facade -> MovieService: findMovie(movieTitle)
+MovieService --> Facade: movie
+
+alt Movie not found
+    Facade --> Main: false
+else Movie found
+    Facade -> SeatService: isValidSeat(seatNumber)
+    SeatService --> Facade: valid
+
+    alt Invalid seat
+        Facade --> Main: false
+    else Valid seat
+        Facade -> SeatService: reserveSeat(movieTitle, seatNumber)
+        SeatService --> Facade: reserved
+
+        alt Seat unavailable
+            Facade --> Main: false
+        else Seat reserved
+            Facade -> PaymentService: processPayment(price, balance)
+            PaymentService --> Facade: payment result
+
+            alt Payment failed
+                Facade -> SeatService: releaseSeat(movieTitle, seatNumber)
+                Facade --> Main: false
+            else Payment successful
+                Facade -> TicketService: generateTicket(movie, seatNumber)
+                TicketService --> Facade: ticketId
+                Facade --> Main: true
+            end
+        end
+    end
+end
+
+@enduml
