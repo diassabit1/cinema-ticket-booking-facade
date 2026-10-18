@@ -63,4 +63,18 @@ Group: SE-2526
 
 ## GitHub Repository
 
+https://github.com/diassabit1/cinema-ticket-booking-facade
+
+
+## UML Diagrams
+
+The project includes two UML diagrams:
+
+- [Class Diagram](diagrams/class-diagram.puml)
+- [Sequence Diagram](diagrams/sequence-diagram.puml)
+
+The Class Diagram shows the structure and relationships between classes.
+
+The Sequence Diagram demonstrates the booking process, including payment failure and rollback.
+
 
