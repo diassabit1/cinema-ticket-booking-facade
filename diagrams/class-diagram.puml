@@ -1,0 +1,85 @@
+
+@startuml
+title Cinema Ticket Booking - Class Diagram
+
+skinparam classAttributeIconSize 0
+top to bottom direction
+
+package app {
+    class Main {
+        +main(args: String[]): void
+    }
+}
+
+package facade {
+    class CinemaBookingFacade {
+        -movieService: MovieService
+        -seatService: SeatService
+        -paymentService: PaymentService
+        -ticketService: TicketService
+        +showAvailableMovies(): void
+        +bookTicket(movieTitle: String, seatNumber: String, balance: double): boolean
+        +cancelBooking(ticketId: String): boolean
+    }
+}
+
+package model {
+    class Movie {
+        -title: String
+        -duration: int
+        -ticketPrice: double
+        +getTitle(): String
+        +getDuration(): int
+        +getTicketPrice(): double
+    }
+}
+
+package service {
+    class MovieService {
+        -movies: List<Movie>
+        +findMovie(title: String): Movie
+        +showMovies(): void
+    }
+
+    class SeatService {
+        -bookedSeats: Set<String>
+        -getSeatKey(movieTitle: String, seatNumber: String): String
+        +isValidSeat(seatNumber: String): boolean
+        +isSeatAvailable(movieTitle: String, seatNumber: String): boolean
+        +reserveSeat(movieTitle: String, seatNumber: String): boolean
+        +releaseSeat(movieTitle: String, seatNumber: String): void
+    }
+
+    class PaymentService {
+        +processPayment(amount: double, balance: double): boolean
+    }
+
+    class TicketService {
+        -tickets: Map<String, String[]>
+        -nextTicketId: int
+        +generateTicket(movie: Movie, seatNumber: String): String
+        +findTicket(ticketId: String): String[]
+        +removeTicket(ticketId: String): void
+    }
+}
+
+Main ..> CinemaBookingFacade : uses
+
+CinemaBookingFacade *-- MovieService
+CinemaBookingFacade *-- SeatService
+CinemaBookingFacade *-- PaymentService
+CinemaBookingFacade *-- TicketService
+
+MovieService --> Movie : manages
+TicketService ..> Movie : uses
+
+legend bottom
+  + Public method
+  - Private field or method
+  ..> Dependency
+  --> Association
+  *-- Composition
+endlegend
+
+@enduml
+ы
